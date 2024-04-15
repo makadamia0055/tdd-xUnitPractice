@@ -20,7 +20,7 @@ public class WasRun extends TestCase{
     }
     public boolean wasRun(){
         return this.wasRun;
-    }
+    } // 파이선에는 없는 게터 구현
 
 
 }

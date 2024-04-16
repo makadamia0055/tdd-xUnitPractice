@@ -1,25 +1,39 @@
 package xUnit;
 
-public class TestCaseTest extends TestCase{
-    private TestCase test;
+import java.util.logging.Logger;
 
-    public TestCaseTest(Class<?> testClass, String testMethodName) {
+public class TestCaseTest extends TestCase{
+    private static final Logger testLogger = Logger.getLogger(TestCaseTest.class.getName());
+
+    private WasRun wasRun;
+
+    private static String logStr = "";
+
+    public TestCaseTest(Class<?> testClass, String testMethodName) throws Exception {
         super(testClass, testMethodName);
+        setUp();
     }
 
-//    public TestCase setUp() throws Exception {
-//        return (TestCase) testClass.getDeclaredConstructor(Class.class, String.class).newInstance(testClass, testMethodName);
-//
-//    }
+
+    @Override
+    public void setUp() throws Exception {
+        //testLogger.info(this.getClass().getName() + ": setUp() 실행");
+        wasRun = new WasRun(WasRun.class, "testMethod");
+        wasRun.setUp();
+
+    }
 
     public void testRunning() throws Exception {
-        WasRun wasRun = new WasRun(WasRun.class, "testMethod"); // WasRun 셋업
-        // 상기 class 전달을 해당 클래스 안에서 실행할 수 있나 봤는데, 레터럴이 아니면 할 수 없는 듯.
+        setUp();
         wasRun.run();
-        wasRun = (WasRun) wasRun.getInstance();
-        System.out.println(wasRun.wasRun());
+        logStr = logStr + "wasRun ";
+
+
+
     }
     public void testSetUp() throws Exception {
+        setUp();
+        logStr = logStr + "wasSetUp ";
 
     }
 
@@ -27,9 +41,16 @@ public class TestCaseTest extends TestCase{
 
     public static void main(String[] args) {
         try {
-            new TestCaseTest(TestCaseTest.class, "testRunning").testRunning();
+            TestCaseTest testCaseTest = new TestCaseTest(TestCaseTest.class, "testRunning");
+            testCaseTest.testSetUp();
+            testCaseTest.testRunning();
+            testCaseTest.run();
+
+
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            testLogger.info(logStr);
         }
     }
 
